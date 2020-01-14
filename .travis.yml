@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t ankurs497/react-test-fibonacci -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run ankurs497/react-test-fibonacci npm test -- --coverage
+
+after_success:
+  - docker build -t ankurs497/fibonacci-client ./client
+  - docker build -t ankurs497/fibonacci-nginx ./nginx
+  - docker build -t ankurs497/fibonacci-server ./server
+  - docker build -t ankurs497/fibonacci-worker ./worker
+#we still have not been able to push the images to docker hub. We want this do that
+#EBS can pull images from there.
+#So login into Docker
+#Use travis variables to store username and password as env variables.
+  - echo "$DOCKER_PWD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push ankurs497/fibonacci-client
+  - docker push ankurs497/fibonacci-nginx
+  - docker push ankurs497/fibonacci-server
+  - docker push ankurs497/fibonacci-worker
