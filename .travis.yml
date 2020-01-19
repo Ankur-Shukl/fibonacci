@@ -21,3 +21,17 @@ after_success:
   - docker push ankurs497/fibonacci-nginx
   - docker push ankurs497/fibonacci-server
   - docker push ankurs497/fibonacci-worker
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: fibonacci
+  env: fibonacci-env
+  bucket_name: elasticbeanstalk-us-east-2-478561203801
+  bucket_path: fibonacci
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
+    
+
